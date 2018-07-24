@@ -18,7 +18,7 @@ describe('ReplacementCardForm.vue', () => {
     });
     it('should contain all form fields', () => {
       expect(cmp.props().groupList.length).toBe(2);
-      expect(cmp.contains('select')).toBe(true);
+      expect(cmp.contains('select#groupid')).toBe(true);
       expect(cmp.findAll('select#groupid > option').length).toBe(3); // the options above + -Select group-
       expect(cmp.contains('input#subscriberid')).toBe(true);
       expect(cmp.contains('select#cards')).toBe(true);
@@ -29,21 +29,24 @@ describe('ReplacementCardForm.vue', () => {
   });
 
   describe('Events', () => {
-    const submit = jest.fn();
+    const submitForm = jest.fn();
     beforeEach(() => {
       cmp = createCmp({
         groupList: [ { groupId: '1', groupName: 'Blah blah' }, { groupId: '2', groupName: 'Blah d Blah' } ],
-        submit
+        submitForm
       });
     });
-
-    it('should call submit method when submit button is clicked', () => {
+    it('should display error message if form invalid', () => {
       cmp.find('button#submit').trigger('click');
-      expect(submit).toHaveBeenCalled();
+      expect(cmp.text()).toContain('Group ID is required');
+      expect(cmp.text()).toContain('Subscriber ID is required');
     });
+    // it('should call submit method when submit button is clicked', () => {
+    //   cmp.find('button#submit').trigger('click');
+    //  expect(submitForm).toHaveBeenCalled();
+    // });
     it('should show search form when search member button is clicked', () => {
       jest.spyOn(cmp.vm, 'subscriberSearch');
-      cmp.update();
       cmp.find('button#subscriberSearch').trigger('click');
       expect(cmp.vm.subscriberSearch).toBeCalled();
     });

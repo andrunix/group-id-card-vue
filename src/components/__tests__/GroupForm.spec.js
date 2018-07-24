@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import GroupForm from '../GroupForm.vue';
 import ReplacementCardForm from '../Group/ReplacementCardForm.vue';
+import TemporaryCardForm from '../Group/TemporaryCardForm.vue';
 
 describe('GroupForm.vue', () => {
   let cmp;
@@ -11,13 +12,21 @@ describe('GroupForm.vue', () => {
       cmp = createCmp({ });
     });
 
-    it('shows the temp form', () => {
+    it('shows the correct form', () => {
       expect(cmp.text()).toContain('Print Temporary ID Cards');
-    });
-
-    it('shows the replacment form', () => {
-      cmp.vm.showTemporaryCardForm = false;
-      expect(cmp.text()).toContain('Replacement');
+      expect(cmp.contains(TemporaryCardForm)).toBe(true);
+      expect(cmp.contains(ReplacementCardForm)).toBe(false);
+      expect(cmp.contains('a#form-toggle')).toBe(true);
+      // when we click the toggle, we go to the Order Replacment cards form
+      cmp.find('a#form-toggle').trigger('click');
+      expect(cmp.text()).toContain('Order Replacement ID Cards');
+      expect(cmp.contains(ReplacementCardForm)).toBe(true);
+      expect(cmp.contains(TemporaryCardForm)).toBe(false);
+      // and when we click again, we should go back to the Print form
+      cmp.find('a#form-toggle').trigger('click');
+      expect(cmp.text()).toContain('Print Temporary ID Cards');
+      expect(cmp.contains(TemporaryCardForm)).toBe(true);
+      expect(cmp.contains(ReplacementCardForm)).toBe(false);
     });
   });
 
@@ -30,7 +39,6 @@ describe('GroupForm.vue', () => {
     it('Calls handleMemberSearch when @click happens', () => {
       const stub = jest.fn();
       cmp.setMethods({ handleMemberSearch: stub });
-      cmp.update();
       cmp.find(ReplacementCardForm).vm.$emit('member-search', '902218823');
       expect(stub).toBeCalledWith('902218823');
     });

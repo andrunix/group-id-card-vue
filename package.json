@@ -13,12 +13,6 @@
     "unit": "jest",
     "test": "npm run lint && npm run unit"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      ".*\\.(vue)$": "vue-jest"
-    }
-  },
   "dependencies": {
     "vue": "^2.5.11"
   },

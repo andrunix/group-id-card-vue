@@ -1,37 +1,61 @@
 <template>
-  <div id="replacement-cards">
-    <h1>{{title}}</h1>
+<div id="replacement-cards">
+  <h1>{{title}}</h1>
+  
+  <p>Please allow 7 to 10 working days to receive your new cards.</p>
 
-    <p>Please allow 7 to 10 working days to receive your new cards.</p>
+  <div class="errors" id="errors" v-if="errors.length > 0">
+    <ul>
+      <li v-for="e in errors">{{e}}</li>
+    </ul>
+  </div>
 
-    <div>
-      <form class="">
-
+  <div class="row">
+    <form class="form-horizontal" id="replacementForm">
+      <div class="form-group">
         <!-- Group Select -->
-        <label for="groupid">Group ID</label>
-        <select id="groupid" name="groupid" v-model="groupId">
-          <option value="">-Select group-</option>
-          <option v-for="g in groupList" v-bind:value="g.groupId">{{g.groupId}} - {{g.groupName}}</option>
-        </select>
-
-        <!-- Subscriber Search Form -->
-
-        <label for="subscriberid">Subscriber ID</label>
-        <input type="text" id="subscriberid" name="subscriberid" v-model="subscriberId" />
-        <button id="subscriberSearch" name="subscriberSearch" @click.prevent="subscriberSearch">Subscriber Search</button>
-
-        <!-- number of cards -->
-        <label for="cards">Number of Cards</label>
-        <select id="cards" name="cards" v-model="numberOfCards">
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
-
-        <!-- submit -->
-        <button id="submit" @click.prevent="submit">Submit Request</button>
-        
-      </form>
+        <label for="groupid" class="col-sm-2 control-label required">Group ID</label>
+        <div class="col-sm-10">
+          <select id="groupid" name="groupid" class="form-control" v-model="groupID">
+            <option value="">-Select group-</option>
+            <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
+          </select>
+        </div>
+      </div>
       
+      <div class="form-group">
+        <!-- Subscriber Search Form -->
+        <label for="subscriberid" class="col-sm-2 control-label required">Subscriber ID</label>
+        <div class="col-sm-2">
+          <input type="text" id="subscriberid" name="subscriberid" class="form-control" v-model="subscriberId" required="true"/>
+        </div>
+        <div class="col-sm-8">
+          <button id="subscriberSearch"
+                  name="subscriberSearch"
+                  class="btn btn-default"
+                  @click.prevent="subscriberSearch">Subscriber Search</button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <!-- number of cards -->
+        <label for="cards" class="col-sm-2 control-label">Number of Cards</label>
+        <div class="col-sm-10">
+          <select id="cards" name="cards" class="form-control" v-model="numberOfCards">
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="col-sm-2 col-sm-offset-2">
+          <button id="submit" class="btn btn-primary" @click.prevent="submitForm">Submit Request</button>
+        </div>
+      </div>
+    </form>
+    
+    
     </div>
   </div>
 </template>
@@ -43,16 +67,35 @@ export default {
   data () {
     return {
       title: 'Order Replacement ID Cards',
-      groupId: '',
-      subscriberId: '',
-      numberOfCards: '1'
+      groupID: '',
+      subscriberID: '',
+      numberOfCards: '1',
+      errors: []
     };
   },
   methods: {
+    submitForm: function () {
+      this.errors = [];
+      if (this.groupID.trim() === '') {
+        this.errors.push('Group ID is required');
+      }
+      if (this.subscriberID.trim() === '') {
+        this.errors.push('Subscriber ID is required');
+      }
+    },
     subscriberSearch: function () {
-      console.log('subscriberSearch called!');
       this.$emit('subscriber-search');
     }
   }
 };
 </script>
+
+<style>
+.required {
+}
+.required:after {
+    color: red;
+    content: '*';
+    padding-left: 4px;
+}
+</style>
