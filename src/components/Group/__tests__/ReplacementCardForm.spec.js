@@ -1,6 +1,7 @@
 // import { shallowMount } from '@vue/test-utils';
 import { mount } from '@vue/test-utils';
 import ReplacementCardForm from '../ReplacementCardForm.vue';
+import groupList from '../../groupList';
 
 describe('ReplacementCardForm.vue', () => {
   let cmp;
@@ -9,7 +10,7 @@ describe('ReplacementCardForm.vue', () => {
   describe('form looks awesome', () => {
     beforeEach(() => {
       cmp = createCmp({
-        groupList: [ { groupId: '1', groupName: 'Blah blah' }, { groupId: '2', groupName: 'Blah d Blah' } ]
+        groupList
       });
     });
 
@@ -29,22 +30,34 @@ describe('ReplacementCardForm.vue', () => {
   });
 
   describe('Events', () => {
-    const submitForm = jest.fn();
     beforeEach(() => {
-      cmp = createCmp({
-        groupList: [ { groupId: '1', groupName: 'Blah blah' }, { groupId: '2', groupName: 'Blah d Blah' } ],
-        submitForm
-      });
+      cmp = createCmp({ groupList });
     });
     it('should display error message if form invalid', () => {
+      jest.spyOn(cmp.vm, 'submitForm');
       cmp.find('button#submit').trigger('click');
+      expect(cmp.vm.submitForm).toBeCalled();
+      // expect(cmp.emitted('order-submitted')).toBeFalsy();
+      expect(cmp.emitted('order-submitted')).not.toBeDefined();
       expect(cmp.text()).toContain('Group ID is required');
       expect(cmp.text()).toContain('Subscriber ID is required');
     });
-    // it('should call submit method when submit button is clicked', () => {
-    //   cmp.find('button#submit').trigger('click');
-    //  expect(submitForm).toHaveBeenCalled();
-    // });
+    it('should emit event on submit if form valid', () => {
+      jest.spyOn(cmp.vm, 'submitForm');
+      // Select a group
+      cmp.findAll('#groupid > option').at(1).element.selected = true;
+      cmp.find('#groupid').trigger('change');
+
+      cmp.find('input#subscriberid').setValue('902218823');
+      expect(cmp.vm.subscriberID).toBe('902218823');
+
+      cmp.find('button#submit').trigger('click');
+      expect(cmp.vm.submitForm).toBeCalled();
+      expect(cmp.emitted('order-submitted').length).toBe(1);
+      expect(cmp.text()).not.toContain('Group ID is required');
+      expect(cmp.text()).not.toContain('Subscriber ID is required');
+    });
+
     it('should show search form when search member button is clicked', () => {
       jest.spyOn(cmp.vm, 'subscriberSearch');
       cmp.find('button#subscriberSearch').trigger('click');

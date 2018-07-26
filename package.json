@@ -1,6 +1,6 @@
 {
-  "name": "group-id-card-vue",
-  "description": "Group ID Card UI",
+  "name": "id-card-vue",
+  "description": "ID Card UI for Member, Employer, Broker Portals",
   "version": "1.0.0",
   "author": "andrew_pierce@bcbst.com",
   "license": "MIT",

@@ -1,8 +1,11 @@
 <template>
 <div id="app">
+  
   <MemberForm v-if="false"/>
-  <GroupForm v-if="!submitted"
+  
+  <GroupForm v-if="true && !submitted"
              v-on:submit="submitted = true"/>
+  
   <Confirmation v-if="submitted"/>
 </div>
 </template>

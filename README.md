@@ -1,6 +1,20 @@
-# group-id-card-vue
+# id-card-vue
 
-> Group ID Card UI
+> ID Card UI
+
+## TODO:
+
+- [ ] Form validation - including date (OMFG)
+- [ ] Show confirmation screen when submitted
+- [ ] Member Temp ID Card screens
+- [ ] Subscriber Search screen
+- [ ] Subscriber search functionality
+- [ ] Use error component for form validations
+- [ ] Call mock service for PDF
+- [ ] Call mock service for SVG
+- [ ] Layout & Styling
+- [ ] Call actual service for PDF
+- [ ] Call actual service for SVG
 
 ## Build Setup
 

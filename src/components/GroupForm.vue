@@ -1,40 +1,26 @@
 <template>
 <div id="group-id-form">
-  <a href="#" id="form-toggle" @click.prevent="toggleForms">{{toggleMessage}}</a>
+  <FormToggle on-message="Or order Replacement ID Cards"
+              off-message="Or print temporary ID Cards"
+              default="on"
+              v-on:toggle-forms="showTemporaryCardForm = !showTemporaryCardForm"/>
+  
   <TemporaryCardForm v-if="showTemporaryCardForm" :groupList="groupList" @member-search="handleMemberSearch"/>
   <ReplacementCardForm v-if="showReplacementCardForm" :groupList="groupList" @member-search="handleMemberSearch"/>
 </div>
 </template>
 
 <script>
+import FormToggle from './FormToggle.vue';
 import ReplacementCardForm from './Group/ReplacementCardForm.vue';
 import TemporaryCardForm from './Group/TemporaryCardForm.vue';
 
-const groupList = [
-  {
-    groupID: '100000',
-    groupName: 'Blah blah group',
-    subgroups: [
-      { id: '0001', name: 'Blah Subgroup 1' },
-      { id: '0002', name: 'Blah Subgroup 2' },
-      { id: '0003', name: 'Blah Subgroup 3' }
-    ]
-  },
-  {
-    groupID: '100050',
-    groupName: 'Blah d Blah Group',
-    subgroups: [
-      { id: '0001', name: 'Blah d Subgroup 1' },
-      { id: '0002', name: 'Blah d Subgroup 2' },
-      { id: '0003', name: 'Blah d Subgroup 3' }
-    ]
-  }
-];
+import groupList from './groupList';
 
 export default {
   name: 'GroupForm',
   props: [ ],
-  components: { TemporaryCardForm, ReplacementCardForm },
+  components: { FormToggle, TemporaryCardForm, ReplacementCardForm },
   data () {
     return {
       showTemporaryCardForm: true,

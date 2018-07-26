@@ -27,7 +27,11 @@
         <!-- Subscriber Search Form -->
         <label for="subscriberid" class="col-sm-2 control-label required">Subscriber ID</label>
         <div class="col-sm-2">
-          <input type="text" id="subscriberid" name="subscriberid" class="form-control" v-model="subscriberId" required="true"/>
+          <input type="text" id="subscriberid"
+                 name="subscriberid"
+                 class="form-control"
+                 v-model="subscriberID"
+                 required="true"/>
         </div>
         <div class="col-sm-8">
           <button id="subscriberSearch"
@@ -54,16 +58,14 @@
         </div>
       </div>
     </form>
-    
-    
-    </div>
   </div>
+</div>
 </template>
 
 <script>
 export default {
   name: 'ReplacementCardForm',
-  props: [ 'groupList', 'submit' ],
+  props: [ 'groupList' ],
   data () {
     return {
       title: 'Order Replacement ID Cards',
@@ -81,6 +83,9 @@ export default {
       }
       if (this.subscriberID.trim() === '') {
         this.errors.push('Subscriber ID is required');
+      }
+      if (this.errors.length === 0) {
+        this.$emit('order-submitted');
       }
     },
     subscriberSearch: function () {
