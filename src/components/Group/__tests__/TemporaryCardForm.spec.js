@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import TemporaryCardForm from '../TemporaryCardForm.vue';
+import SubscriberSearch from '../SubscriberSearch.vue';
 
 describe('TemporaryCardForm.vue', () => {
   let cmp;
@@ -44,7 +45,7 @@ describe('TemporaryCardForm.vue', () => {
       expect(cmp.findAll('select#subgroupid > option').length).toBe(0); // empty if no group selected
       expect(cmp.contains('input#departmentid')).toBe(true);
       expect(cmp.contains('input#subscriberid')).toBe(true);
-      expect(cmp.contains('button#subscriberSearch')).toBe(true);
+      expect(cmp.contains(SubscriberSearch)).toBe(true);
       expect(cmp.contains('button#submit')).toBe(true);
 
       // if the form is empty, it's not valid...
@@ -69,11 +70,7 @@ describe('TemporaryCardForm.vue', () => {
       cmp.find('button#submit').trigger('submit');
       expect(cmp.emitted('form-submitted')).toHaveLength(1);
     });
-    it('should show search form when search member button is clicked', () => {
-      jest.spyOn(cmp.vm, 'subscriberSearch');
-      cmp.find('button#subscriberSearch').trigger('click');
-      expect(cmp.vm.subscriberSearch).toBeCalled();
-    });
+
     it('should populate the subgroup list when a group is selected', () => {
       expect(cmp.vm.groupID).toBe('');
       expect(cmp.vm.subgroups.length).toBe(0);

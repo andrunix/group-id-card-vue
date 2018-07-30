@@ -80,10 +80,13 @@
         </div>
         <div class="col-sm-4">
           OR
+          <SubscriberSearch />
+          <!--
           <button id="subscriberSearch"
                   name="subscriberSearch"
                   class="btn btn-default"
                   @click.prevent="subscriberSearch">Subscriber Search</button>
+          -->
 		    </div>
 		  </div>
       
@@ -99,9 +102,12 @@
 </template>
 
 <script>
+import SubscriberSearch from './SubscriberSearch.vue';
+
 export default {
   name: 'TemporaryCardForm',
   props: [ 'groupList', 'submitForm' ],
+  components: { SubscriberSearch },
   data () {
     return {
       title: 'Print Temporary ID Cards',

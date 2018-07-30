@@ -1,6 +1,7 @@
 // import { shallowMount } from '@vue/test-utils';
 import { mount } from '@vue/test-utils';
 import ReplacementCardForm from '../ReplacementCardForm.vue';
+import SubscriberSearch from '../SubscriberSearch.vue';
 import groupList from '../../groupList';
 
 describe('ReplacementCardForm.vue', () => {
@@ -26,6 +27,7 @@ describe('ReplacementCardForm.vue', () => {
       expect(cmp.findAll('select#cards > option').length).toBe(2);
       expect(cmp.contains('button#subscriberSearch')).toBe(true);
       expect(cmp.contains('button#submit')).toBe(true);
+      expect(cmp.contains(SubscriberSearch)).toBe(true);
     });
   });
 
@@ -37,7 +39,6 @@ describe('ReplacementCardForm.vue', () => {
       jest.spyOn(cmp.vm, 'submitForm');
       cmp.find('button#submit').trigger('click');
       expect(cmp.vm.submitForm).toBeCalled();
-      // expect(cmp.emitted('order-submitted')).toBeFalsy();
       expect(cmp.emitted('order-submitted')).not.toBeDefined();
       expect(cmp.text()).toContain('Group ID is required');
       expect(cmp.text()).toContain('Subscriber ID is required');
@@ -56,12 +57,6 @@ describe('ReplacementCardForm.vue', () => {
       expect(cmp.emitted('order-submitted').length).toBe(1);
       expect(cmp.text()).not.toContain('Group ID is required');
       expect(cmp.text()).not.toContain('Subscriber ID is required');
-    });
-
-    it('should show search form when search member button is clicked', () => {
-      jest.spyOn(cmp.vm, 'subscriberSearch');
-      cmp.find('button#subscriberSearch').trigger('click');
-      expect(cmp.vm.subscriberSearch).toBeCalled();
     });
   });
 });

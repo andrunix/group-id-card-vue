@@ -34,10 +34,7 @@
                  required="true"/>
         </div>
         <div class="col-sm-8">
-          <button id="subscriberSearch"
-                  name="subscriberSearch"
-                  class="btn btn-default"
-                  @click.prevent="subscriberSearch">Subscriber Search</button>
+          <SubscriberSearch />
         </div>
       </div>
       
@@ -59,20 +56,25 @@
       </div>
     </form>
   </div>
+
 </div>
 </template>
 
 <script>
+import SubscriberSearch from './SubscriberSearch.vue';
+
 export default {
   name: 'ReplacementCardForm',
   props: [ 'groupList' ],
+  components: { SubscriberSearch },
   data () {
     return {
       title: 'Order Replacement ID Cards',
       groupID: '',
       subscriberID: '',
       numberOfCards: '1',
-      errors: []
+      errors: [],
+      showSubscriberSearch: false
     };
   },
   methods: {
@@ -85,11 +87,16 @@ export default {
         this.errors.push('Subscriber ID is required');
       }
       if (this.errors.length === 0) {
-        this.$emit('order-submitted');
+        this.$emit('order-submitted', {
+          groupID: this.groupID,
+          subscriberID: this.subscriberID,
+          numberOfCards: this.numberOfCards
+        });
       }
     },
     subscriberSearch: function () {
       this.$emit('subscriber-search');
+      this.showSubscriberSearch = true;
     }
   }
 };
