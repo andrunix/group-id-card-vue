@@ -21,13 +21,31 @@
       <input type="text" name="firstname" id="firstname" v-model="firstName" :disabled="this.searchByOption === 'ssn'">
       <label for="dob">Birth date</label>
       <input type="date" name="dob" id="dob" v-model="dob" :disabled="this.searchByOption === 'ssn'">
-      <button name="search" id="search" @click.prevent="handleSearch">Search</button>
-      <button name="cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
+      <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
+      <button name="cancel" class="btn btn-cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
     </form>
   </div>
 
   <div id="search-results" v-if="searchResults.length > 0">
     <h2>Search Results</h2>
+    <table class="table table-striped" id="results-table">
+      <thead>
+        <tr>
+          <th>Subscriber ID</th><th>Name</th><th>Birth Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="s in searchResults">
+          <td><a href="#" @click.prevent="handleSubscriberSelected(s.subscriberID)">{{s.subscriberID}}</a></td>
+          <td>{{s.lastName}}, {{s.firstName}}</td>
+          <td>{{s.dateOfBirth}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="search-error" v-if="errorMessage !== ''">
+    {{errorMessage}}
   </div>
 </div>
 </template>
@@ -42,25 +60,43 @@ export default {
   data () {
     return {
       showForm: false,
-      dob: '',
-      firstName: '',
-      lastName: '',
-      ssn: '',
+      dob: '', // '08/06/1959',
+      firstName: '', // 'Chris',
+      lastName: '', //  'Hall',
+      ssn: '', // '322244452',
       searchByOption: 'ssn',
-      searchResults: []
+      searchResults: [],
+      errorMessage: ''
     };
   },
   methods: {
+    formInvalid () {
+      if (this.searchByOption === 'ssn' && this.ssn.length === 9) {
+        return false;
+      } else if (this.searchByOption !== 'ssn') {
+        if (this.firstName !== '' && this.lastName !== '' /* && this.dob !== '' */) {
+          return false;
+        }
+      }
+      return true;
+    },
     async handleSearch () {
-      // do search here
       const params = {
         firstName: this.firstName,
         lastName: this.lastName,
         ssn: this.ssn,
         dob: this.dob
       };
-      this.searchResults = await api.subscriberSearch(params);
+      try {
+        const results = await api.subscriberSearch(params);
+        this.searchResults = results.data;
+      } catch (e) {
+        this.errorMessage = 'No subscribers found';
+      }
       this.showForm = this.searchResults.length > 0;
+    },
+    handleSubscriberSelected (id) {
+      this.$emit('subscriber-selected', id);
     },
     resetForm () {
       this.showForm = false;

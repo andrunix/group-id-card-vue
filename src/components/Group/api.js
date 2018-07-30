@@ -1,19 +1,15 @@
 import mockResults from './mocksearch.js';
 
 const api = {
-  subscriberSearch: () => new Promise(resolve => {
-    resolve(mockResults);
-  })
-  /*
-  subscriberSearch: function (params) {
-    return new Promise(resolve => {
-      // actually, we need to call the service here
-      setTimeout(function () {
-        resolve(mockResults);
-      }, 2000);
+  subscriberSearch: (params) => {
+    return new Promise((resolve, reject) => {
+      if (params.ssn === '456885432') {
+        reject(new Error('Subscriber not found'));
+      } else {
+        resolve({ data: mockResults });
+      }
     });
   }
-  */
 };
 
 export default api;
