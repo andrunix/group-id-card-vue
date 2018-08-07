@@ -5,7 +5,10 @@
               default="on"
               v-on:toggle-forms="showTemporaryCardForm = !showTemporaryCardForm"/>
   
-  <TemporaryCardForm v-if="showTemporaryCardForm" :groupList="groupList" @member-search="handleMemberSearch"/>
+  <TemporaryCardForm v-if="showTemporaryCardForm"
+                     :groupList="groupList"
+                     @member-search="handleMemberSearch"/>
+  
   <ReplacementCardForm v-if="showReplacementCardForm" :groupList="groupList" @member-search="handleMemberSearch"/>
 </div>
 </template>

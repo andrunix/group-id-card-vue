@@ -4,13 +4,15 @@
 
 ## TODO:
 
+- [ ] Tests - at least 75% coverage
 - [ ] Form validation - including date (OMFG)
+- [ ] Show loading screen when waiting on service
 - [ ] Show confirmation screen when submitted
 - [ ] Member Temp ID Card screens
 - [ ] Subscriber Search screen
 - [ ] Subscriber search functionality
 - [ ] Use error component for form validations
-- [ ] Call mock service for PDF
+- [X] Call mock service for PDF
 - [ ] Call mock service for SVG
 - [ ] Layout & Styling
 - [ ] Call actual service for PDF

@@ -2,27 +2,53 @@
 <div id="member-search">
   <button id="subscriberSearch"
           class="btn btn-default"
+          :disabled="groupId === ''"
           v-if="!showForm"
           @click.prevent="subscriberSearch">Subscriber Search</button>
   
   <div id="formdiv" v-if="showForm">
     <div v-if="showForm">
-      <h1>Member Search {{searchByOption}}</h1>
+      <h1>Member Search</h1>
     </div>
-    <form id="subscriber-form">
-      
-      <input type="radio" name="searchOption" id="searchOptionSSN" value="ssn" v-model="searchByOption" />
-      <label for="searchOptionSSN" class="control-label">SSN</label>
-      <input type="text" id="ssn" name="ssn" v-model="ssn" :disabled="this.searchByOption !== 'ssn'">
-      <input type="radio" name="searchOption" id="searchOptionName" value="name" v-model="searchByOption" />
-      <label for="searchOptionSSN">Last name</label>
-      <input type="text" name="lastname" id="lastname" v-model="lastName" :disabled="this.searchByOption === 'ssn'">
-      <label for="firstname">First name</label>
-      <input type="text" name="firstname" id="firstname" v-model="firstName" :disabled="this.searchByOption === 'ssn'">
-      <label for="dob">Birth date</label>
-      <input type="date" name="dob" id="dob" v-model="dob" :disabled="this.searchByOption === 'ssn'">
-      <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
-      <button name="cancel" class="btn btn-cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
+    <form class="form-horizontal" id="subscriber-form">
+      <div class="row">
+        <div class="form-group">
+          <label for="searchOptionSSN" class="control-label col-sm-4">
+            <input type="radio" name="searchOption" id="searchOptionSSN" value="ssn" v-model="searchByOption" />
+            SSN
+          </label>
+          <div class="col-sm-8">
+            <input type="text" id="ssn" name="ssn" class="form-control" v-model="ssn" :disabled="this.searchByOption !== 'ssn'" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="searchOptionSSN" class="control-label col-sm-4">
+            <input type="radio" name="searchOption" id="searchOptionName" value="name" v-model="searchByOption" />
+            Last name
+          </label>
+          <div class="col-sm-8">
+            <input type="text" name="lastname" id="lastname" class="form-control" v-model="lastName" :disabled="this.searchByOption === 'ssn'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="firstname" class="control-label col-sm-4">First name</label>
+          <div class="col-sm-8">
+            <input type="text" name="firstname" id="firstname" class="form-control" v-model="firstName" :disabled="this.searchByOption === 'ssn'">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="dob" class="control-label col-sm-4">Birth date</label>
+          <div class="col-sm-8">
+            <input type="date" name="dob" id="dob" class="form-control" v-model="dob" :disabled="this.searchByOption === 'ssn'">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
+            <button name="cancel" class="btn btn-cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 
@@ -55,8 +81,7 @@ import api from './api';
 
 export default {
   name: 'MemberSearch',
-  props: {
-  },
+  props: [ 'groupId' ],
   data () {
     return {
       showForm: false,
@@ -97,9 +122,15 @@ export default {
     },
     handleSubscriberSelected (id) {
       this.$emit('subscriber-selected', id);
+      this.resetForm();
     },
     resetForm () {
       this.showForm = false;
+      this.dob = '';
+      this.firstName = '';
+      this.lastName = '';
+      this.ssn = '';
+      this.searchByOption = 'ssn';
       this.searchResults = [];
     },
     subscriberSearch () {

@@ -3,7 +3,9 @@
   <h1 class="id-card">{{ title }}</h1>
   
   <div>Temporary ID cards can be produced for a Group, Subgroup, Department, or Subscriber</div>
-  
+
+  <LoadingIndicator :is-loading="isLoading" />
+
   <div class="errors" id="errors" v-if="errors.length > 0">
     <ul>
       <li v-for="e in errors">{{e}}</li>
@@ -13,8 +15,6 @@
 	<form class="form-horizontal"
         id="downloadTempCard"
         name="downloadTempCard"
-        action="#"
-        @submit="checkForm"
         target="_blank">
     
     <div class="row">
@@ -27,7 +27,7 @@
 			    <input type="date"
                  id="effectiveDate"
                  class="controls input-append date form_date form-control"
-                 v-model="effectiveDate" />
+                 v-model="formData.effectiveDate" />
 			    <span>(MM/DD/YYYY) </span> 
 			    <span class="add-on"><i class="icon-remove"></i></span>
 			    <span class="add-on"><i class="icon-th"></i></span>
@@ -37,7 +37,7 @@
         <!-- Group Select -->
         <label for="groupid" class="col-sm-2 control-label required">Group ID</label>
         <div class="col-sm-10">
-          <select id="groupid" name="groupid" class="form-control" v-model="groupID" @change="groupChanged">
+          <select id="groupid" name="groupid" class="form-control" v-model="formData.groupID" @change="groupChanged">
             <option value="">-Select group-</option>
             <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
           </select>
@@ -50,7 +50,8 @@
 			    <select id="subgroupid"
 			    	      type="text"
                   class="form-control"
-                  v-model="subgroupID">
+                  v-model="formData.subgroupID"
+                  :disabled="formData.groupID === ''">
             <option v-for="s in subgroups" v-bind:value="s.id">{{s.id}} - {{s.name}}</option>
           </select>
 		    </div>
@@ -64,7 +65,7 @@
           <input id="departmentid" 
 			    	     type="text"
                  class="form-control"
-                 v-model="departmentID" />
+                 v-model="formData.departmentID" />
         </div>
       </div>
       
@@ -76,23 +77,21 @@
           <input id="subscriberid" 
 			    	     type="text"
                  class="form-control"
-                 v-model="subscriberID" />
+                 v-model="formData.subscriberID" />
         </div>
         <div class="col-sm-4">
           OR
-          <SubscriberSearch />
-          <!--
-          <button id="subscriberSearch"
-                  name="subscriberSearch"
-                  class="btn btn-default"
-                  @click.prevent="subscriberSearch">Subscriber Search</button>
-          -->
+          <SubscriberSearch
+            :group-id="formData.groupID"
+            v-on:subscriber-selected="handleSubscriberSelected"/>
 		    </div>
 		  </div>
       
       <div class="form-group">
         <div class="col-sm-10 col-sm-offset-2">
-          <button id="submit" class="btn btn-primary">Submit Request</button>
+          <button id="submit" class="btn btn-primary"
+                  @click.prevent="submitForm"
+                  :disabled="formInvalid()">Submit Request</button>
         </div>
       </div>
     </div>
@@ -102,51 +101,105 @@
 </template>
 
 <script>
+import LoadingIndicator from '../LoadingIndicator.vue';
 import SubscriberSearch from './SubscriberSearch.vue';
+import api from './api';
 
 export default {
   name: 'TemporaryCardForm',
-  props: [ 'groupList', 'submitForm' ],
-  components: { SubscriberSearch },
+  props: [ 'groupList' ],
+  components: { SubscriberSearch, LoadingIndicator },
   data () {
     return {
       title: 'Print Temporary ID Cards',
-      groupID: '',
-      subgroupID: '',
-      departmentID: '',
-      subscriberID: '',
-      effectiveDate: '2018-07-17',
       errors: [],
-      subgroups: []
+      subgroups: [],
+      idcard: '',
+      isLoading: false,
+      formData: {
+        groupID: '',
+        subgroupID: '',
+        departmentID: '',
+        subscriberID: '',
+        effectiveDate: '2018-07-17'
+      }
     };
   },
   computed: {
     formValid: function (e) {
-      return this.groupID.trim() !== '' && this.effectiveDate.trim() !== '';
+      return this.formData.groupID.trim() !== '' && this.formData.effectiveDate.trim() !== '';
     }
   },
   methods: {
-    groupChanged: function () {
-      const val = this.groupID;
+    groupChanged () {
+      const val = this.formData.groupID;
       const grp = this.groupList.find(g => g.groupID === val);
-      this.subgroups = grp.subgroups;
+      this.subgroups = typeof grp !== 'undefined' ? grp.subgroups : [];
+      // Reset the subgroup id
+      this.formData.subgroupID = '';
+      this.formData.subscriberID = '';
     },
     checkForm: function (e) {
       this.errors = [];
-      if (this.groupID.trim() === '') {
+      if (this.formData.groupID.trim() === '') {
         this.errors.push('Group ID is required');
       }
-      if (this.effectiveDate.trim() === '') {
+      if (this.formData.effectiveDate.trim() === '') {
         this.errors.push('Benefit effective date is required');
       }
       if (!this.errors.length) {
         return true;
       }
       e.preventDefault();
-      this.$emit('form-submitted');
     },
-    subscriberSearch: function () {
+    formInvalid () {
+      if (this.formData.groupID.trim() !== '' && this.formData.effectiveDate.trim() !== '') {
+        return false;
+      }
+      return true;
+    },
+    subscriberSearch () {
       this.$emit('subscriber-search');
+    },
+    handleSubscriberSelected (id) {
+      this.formData.subscriberID = id;
+    },
+    submitForm: async function () {
+      this.isLoading = true;
+      this.$emit('form-submitted');
+      // TODO: pass the required parameters to the service
+      const params = {};
+      try {
+        const resp = await api.getTempCardPdf(params);
+        // Downloading/Opening the PDF directly. Refer to this:
+        // https://github.com/kennethjiang/js-file-download/blob/master/file-download.js
+        // The response is the raw PDF. Construct a Blob from it.
+        let blob = new Blob([resp], { type: 'application/pdf' });
+        // this is for IE...
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+          window.navigator.msSaveBlob(blob, 'idcard.pdf');
+        } else {
+          var blobURL = window.URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = blobURL;
+          a.setAttribute('download', 'idcard.pdf');
+          // Safari thinks _blank anchor are pop ups. We only want to set _blank
+          // target if the browser does not support the HTML5 download attribute.
+          // This allows you to download files in desktop safari if pop up blocking
+          // is enabled.
+          if (typeof a.download === 'undefined') {
+            a.setAttribute('target', '_blank');
+          }
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobURL);
+        }
+      } catch (e) {
+        console.log('caught err: ', e);
+      }
+      this.isLoading = false;
     }
   }
 };
