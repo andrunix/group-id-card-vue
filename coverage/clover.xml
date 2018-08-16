@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1533654995414" clover="3.2.0">
-  <project timestamp="1533654995414" name="All files">
-    <metrics statements="116" coveredstatements="79" conditionals="51" coveredconditionals="34" methods="41" coveredmethods="30" elements="208" coveredelements="143" complexity="0" loc="116" ncloc="116" packages="4" files="12" classes="12">
+<coverage generated="1533827260025" clover="3.2.0">
+  <project timestamp="1533827260025" name="All files">
+    <metrics statements="67" coveredstatements="56" conditionals="26" coveredconditionals="26" methods="27" coveredmethods="20" elements="120" coveredelements="102" complexity="0" loc="67" ncloc="67" packages="4" files="10" classes="10">
       <package name="src">
         <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <file name="main.js" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\main.js">
@@ -13,25 +13,14 @@
         </file>
       </package>
       <package name="src.components">
-        <metrics statements="21" coveredstatements="18" conditionals="4" coveredconditionals="2" methods="11" coveredmethods="7"/>
+        <metrics statements="13" coveredstatements="12" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="5"/>
         <file name="FormToggle.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\FormToggle.vue">
           <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="4"/>
-          <line num="19" count="4" type="stmt"/>
-          <line num="25" count="3" type="stmt"/>
-          <line num="26" count="3" type="stmt"/>
-          <line num="30" count="7" type="cond" truecount="2" falsecount="0"/>
-          <line num="33" count="4" type="stmt"/>
-        </file>
-        <file name="GroupForm.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\GroupForm.vue">
-          <metrics statements="8" coveredstatements="6" conditionals="2" coveredconditionals="0" methods="5" coveredmethods="2"/>
-          <line num="17" count="1" type="stmt"/>
-          <line num="18" count="1" type="stmt"/>
-          <line num="19" count="1" type="stmt"/>
-          <line num="21" count="1" type="stmt"/>
-          <line num="28" count="2" type="stmt"/>
-          <line num="35" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="37" count="5" type="stmt"/>
-          <line num="43" count="0" type="stmt"/>
+          <line num="19" count="2" type="stmt"/>
+          <line num="25" count="1" type="stmt"/>
+          <line num="26" count="1" type="stmt"/>
+          <line num="30" count="3" type="cond" truecount="2" falsecount="0"/>
+          <line num="33" count="2" type="stmt"/>
         </file>
         <file name="MemberForm.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\MemberForm.vue">
           <metrics statements="6" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
@@ -44,16 +33,16 @@
         </file>
         <file name="groupList.js" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\groupList.js">
           <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-          <line num="1" count="2" type="stmt"/>
-          <line num="22" count="2" type="stmt"/>
+          <line num="1" count="1" type="stmt"/>
+          <line num="22" count="1" type="stmt"/>
         </file>
       </package>
       <package name="src.components.Group">
-        <metrics statements="87" coveredstatements="57" conditionals="47" coveredconditionals="32" methods="25" coveredmethods="19"/>
+        <metrics statements="46" coveredstatements="40" conditionals="24" coveredconditionals="24" methods="16" coveredmethods="11"/>
         <file name="ReplacementCardForm.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\Group\ReplacementCardForm.vue">
           <metrics statements="11" coveredstatements="9" conditionals="6" coveredconditionals="6" methods="3" coveredmethods="2"/>
-          <line num="64" count="2" type="stmt"/>
-          <line num="71" count="6" type="stmt"/>
+          <line num="64" count="1" type="stmt"/>
+          <line num="71" count="4" type="stmt"/>
           <line num="82" count="2" type="stmt"/>
           <line num="83" count="2" type="cond" truecount="2" falsecount="0"/>
           <line num="84" count="1" type="stmt"/>
@@ -66,9 +55,9 @@
         </file>
         <file name="SubscriberSearch.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\Group\SubscriberSearch.vue">
           <metrics statements="24" coveredstatements="24" conditionals="16" coveredconditionals="16" methods="7" coveredmethods="7"/>
-          <line num="80" count="4" type="stmt"/>
-          <line num="86" count="21" type="stmt"/>
-          <line num="97" count="85" type="cond" truecount="6" falsecount="0"/>
+          <line num="80" count="2" type="stmt"/>
+          <line num="86" count="12" type="stmt"/>
+          <line num="97" count="81" type="cond" truecount="6" falsecount="0"/>
           <line num="99" count="24" type="cond" truecount="4" falsecount="0"/>
           <line num="100" count="5" type="stmt"/>
           <line num="101" count="19" type="cond" truecount="2" falsecount="0"/>
@@ -91,66 +80,22 @@
           <line num="134" count="2" type="stmt"/>
           <line num="137" count="1" type="stmt"/>
         </file>
-        <file name="TemporaryCardForm.vue" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\Group\TemporaryCardForm.vue">
-          <metrics statements="41" coveredstatements="15" conditionals="23" coveredconditionals="8" methods="9" coveredmethods="6"/>
-          <line num="102" count="2" type="stmt"/>
-          <line num="103" count="2" type="stmt"/>
-          <line num="110" count="7" type="stmt"/>
-          <line num="126" count="2" type="cond" truecount="2" falsecount="0"/>
-          <line num="131" count="2" type="stmt"/>
-          <line num="132" count="4" type="stmt"/>
-          <line num="133" count="2" type="cond" truecount="1" falsecount="1"/>
-          <line num="135" count="2" type="stmt"/>
-          <line num="136" count="2" type="stmt"/>
-          <line num="139" count="0" type="stmt"/>
-          <line num="140" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="141" count="0" type="stmt"/>
-          <line num="143" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="144" count="0" type="stmt"/>
-          <line num="146" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="147" count="0" type="stmt"/>
-          <line num="149" count="0" type="stmt"/>
-          <line num="152" count="11" type="cond" truecount="4" falsecount="0"/>
-          <line num="153" count="4" type="stmt"/>
-          <line num="155" count="7" type="stmt"/>
-          <line num="158" count="0" type="stmt"/>
-          <line num="161" count="0" type="stmt"/>
-          <line num="163" count="11" type="cond" truecount="1" falsecount="4"/>
-          <line num="164" count="1" type="stmt"/>
-          <line num="166" count="1" type="stmt"/>
-          <line num="168" count="0" type="stmt"/>
-          <line num="172" count="0" type="stmt"/>
-          <line num="174" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="175" count="0" type="stmt"/>
-          <line num="177" count="0" type="stmt"/>
-          <line num="178" count="0" type="stmt"/>
-          <line num="179" count="0" type="stmt"/>
-          <line num="180" count="0" type="stmt"/>
-          <line num="181" count="0" type="stmt"/>
-          <line num="186" count="0" type="cond" truecount="0" falsecount="2"/>
-          <line num="187" count="0" type="stmt"/>
-          <line num="189" count="0" type="stmt"/>
-          <line num="190" count="0" type="stmt"/>
-          <line num="191" count="0" type="stmt"/>
-          <line num="192" count="0" type="stmt"/>
-          <line num="195" count="0" type="stmt"/>
-        </file>
         <file name="api.js" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\Group\api.js">
-          <metrics statements="10" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="4"/>
-          <line num="4" count="4" type="stmt"/>
-          <line num="6" count="4" type="stmt"/>
+          <metrics statements="10" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="2"/>
+          <line num="4" count="2" type="stmt"/>
+          <line num="6" count="2" type="stmt"/>
           <line num="8" count="6" type="stmt"/>
           <line num="9" count="6" type="cond" truecount="2" falsecount="0"/>
           <line num="10" count="1" type="stmt"/>
           <line num="12" count="5" type="stmt"/>
-          <line num="21" count="1" type="stmt"/>
-          <line num="22" count="1" type="stmt"/>
+          <line num="21" count="0" type="stmt"/>
+          <line num="22" count="0" type="stmt"/>
           <line num="28" count="0" type="stmt"/>
           <line num="31" count="0" type="stmt"/>
         </file>
         <file name="mocksearch.js" path="C:\home\a16106p\code\eidcards\group-id-card-vue\src\components\Group\mocksearch.js">
           <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-          <line num="1" count="4" type="stmt"/>
+          <line num="1" count="2" type="stmt"/>
         </file>
       </package>
       <package name="src.components.Member">
