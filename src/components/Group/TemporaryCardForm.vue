@@ -81,9 +81,8 @@
         </div>
         <div class="col-sm-4">
           OR
-          <SubscriberSearch
-            :group-id="formData.groupID"
-            v-on:subscriber-selected="handleSubscriberSelected"/>
+          <SubscriberSearch v-on:subscriber-search-complete="handleSearchComplete"
+            :group-id="formData.groupID" />
 		    </div>
 		  </div>
       
@@ -91,9 +90,16 @@
         <div class="col-sm-10 col-sm-offset-2">
           <button id="submit" class="btn btn-primary"
                   @click.prevent="submitForm"
-                  :disabled="formInvalid()">Submit Request</button>
+                  :disabled="formInvalid() || submitted">Submit Request</button>
         </div>
       </div>
+
+      <SubscriberSearchResults
+        :showModal="showResultsModal"
+        :search-results="searchResults"
+        v-on:subscriber-selected="handleSubscriberSelected"
+        v-on:subscriber-search-cancel="handleCancel"/>
+
     </div>
 	</form>
 
@@ -103,12 +109,13 @@
 <script>
 import LoadingIndicator from '../LoadingIndicator.vue';
 import SubscriberSearch from './SubscriberSearch.vue';
+import SubscriberSearchResults from './SubscriberSearchResults.vue';
 import api from './api';
 
 export default {
   name: 'TemporaryCardForm',
   props: [ 'groupList' ],
-  components: { SubscriberSearch, LoadingIndicator },
+  components: { SubscriberSearch, SubscriberSearchResults, LoadingIndicator },
   data () {
     return {
       title: 'Print Temporary ID Cards',
@@ -116,18 +123,22 @@ export default {
       subgroups: [],
       idcard: '',
       isLoading: false,
+      submitted: false,
       formData: {
         groupID: '',
         subgroupID: '',
         departmentID: '',
         subscriberID: '',
         effectiveDate: '2018-07-17'
-      }
+      },
+      searchResults: [],
+      showResultsModal: false
     };
   },
   computed: {
     formValid: function (e) {
-      return this.formData.groupID.trim() !== '' && this.formData.effectiveDate.trim() !== '';
+      return this.formData.groupID.trim() !== '' &&
+        this.formData.effectiveDate.trim() !== '';
     }
   },
   methods: {
@@ -162,10 +173,21 @@ export default {
       this.$emit('subscriber-search');
     },
     handleSubscriberSelected (id) {
+      this.searchResults = [];
+      this.showResultsModal = false;
       this.formData.subscriberID = id;
+    },
+    handleSearchComplete (results) {
+      this.searchResults = results;
+      this.showResultsModal = results.length > 0;
+    },
+    handleCancel () {
+      this.searchResults = [];
+      this.showResultsModal = false;
     },
     submitForm: async function () {
       this.isLoading = true;
+      this.submitted = true;
       this.$emit('form-submitted');
       // TODO: pass the required parameters to the service
       const params = {};
@@ -199,6 +221,7 @@ export default {
       } catch (e) {
         console.log('caught err: ', e);
       }
+      this.submitted = false;
       this.isLoading = false;
     }
   }

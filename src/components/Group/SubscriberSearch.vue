@@ -1,75 +1,54 @@
 <template>
-<div id="member-search">
+<div id="subscriber-search">
   <button id="subscriberSearch"
           class="btn btn-default"
           :disabled="groupId === ''"
           v-if="!showForm"
           @click.prevent="subscriberSearch">Subscriber Search</button>
   
-  <div id="formdiv" v-if="showForm">
-    <div v-if="showForm">
-      <h1>Member Search</h1>
-    </div>
+  <modal v-model="showForm" title="Subscriber Search" ref="modal" size="lg">
     <form class="form-horizontal" id="subscriber-form">
       <div class="row">
         <div class="form-group">
-          <label for="searchOptionSSN" class="control-label col-sm-4">
-            <input type="radio" name="searchOption" id="searchOptionSSN" value="ssn" v-model="searchByOption" />
+          <label for="searchOptionSSN" class="control-label col-sm-2">
+            <!-- <input type="radio" name="searchOption" id="searchOptionSSN" value="ssn" v-model="searchByOption" /> -->
             SSN
           </label>
           <div class="col-sm-8">
-            <input type="text" id="ssn" name="ssn" class="form-control" v-model="ssn" :disabled="this.searchByOption !== 'ssn'" />
+            <input type="text" id="ssn" name="ssn" class="form-control" v-model="ssn"> <!--  :disabled="this.searchByOption !== 'ssn'" /> -->
           </div>
         </div>
         <div class="form-group">
-          <label for="searchOptionSSN" class="control-label col-sm-4">
-            <input type="radio" name="searchOption" id="searchOptionName" value="name" v-model="searchByOption" />
+          <label for="searchOptionSSN" class="control-label col-sm-2">
+            <!-- <input type="radio" name="searchOption" id="searchOptionName" value="name" v-model="searchByOption" /> -->
             Last name
           </label>
           <div class="col-sm-8">
-            <input type="text" name="lastname" id="lastname" class="form-control" v-model="lastName" :disabled="this.searchByOption === 'ssn'">
+            <input type="text" name="lastname" id="lastname" class="form-control" v-model="lastName"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
           </div>
         </div>
         <div class="form-group">
-          <label for="firstname" class="control-label col-sm-4">First name</label>
+          <label for="firstname" class="control-label col-sm-2">First name</label>
           <div class="col-sm-8">
-            <input type="text" name="firstname" id="firstname" class="form-control" v-model="firstName" :disabled="this.searchByOption === 'ssn'">
+            <input type="text" name="firstname" id="firstname" class="form-control" v-model="firstName"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
           </div>
         </div>
         <div class="form-group">
-          <label for="dob" class="control-label col-sm-4">Birth date</label>
+          <label for="dob" class="control-label col-sm-2">Birth date</label>
           <div class="col-sm-8">
-            <input type="date" name="dob" id="dob" class="form-control" v-model="dob" :disabled="this.searchByOption === 'ssn'">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-12">
-            <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
-            <button name="cancel" class="btn btn-cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
+            <input type="date" name="dob" id="dob" class="form-control" v-model="dob"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
           </div>
         </div>
       </div>
     </form>
-  </div>
-
-  <div id="search-results" v-if="searchResults.length > 0">
-    <h2>Search Results</h2>
-    <table class="table table-striped" id="results-table">
-      <thead>
-        <tr>
-          <th>Subscriber ID</th><th>Name</th><th>Birth Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="s in searchResults">
-          <td><a href="#" @click.prevent="handleSubscriberSelected(s.subscriberID)">{{s.subscriberID}}</a></td>
-          <td>{{s.lastName}}, {{s.firstName}}</td>
-          <td>{{s.dateOfBirth}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+    <div slot="footer">
+      <div class="col-sm-12">
+        <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
+        <button name="cancel" class="btn btn-cancel" id="cancel" @click.prevent="resetForm">Cancel</button>
+      </div>
+    </div>
+  </modal>
+  
   <div id="search-error" v-if="errorMessage !== ''">
     {{errorMessage}}
   </div>
@@ -78,10 +57,12 @@
 
 <script>
 import api from './api';
+import { Modal } from 'uiv';
 
 export default {
   name: 'MemberSearch',
   props: [ 'groupId' ],
+  components: { Modal },
   data () {
     return {
       showForm: false,
@@ -114,15 +95,13 @@ export default {
       };
       try {
         const results = await api.subscriberSearch(params);
-        this.searchResults = results.data;
+        // this.searchResults = results.data;
+        this.showForm = false;
+        this.$emit('subscriber-search-complete', results.data);
       } catch (e) {
         this.errorMessage = 'No subscribers found';
       }
-      this.showForm = this.searchResults.length > 0;
-    },
-    handleSubscriberSelected (id) {
-      this.$emit('subscriber-selected', id);
-      this.resetForm();
+      // this.showForm = this.searchResults.length > 0;
     },
     resetForm () {
       this.showForm = false;
@@ -131,7 +110,6 @@ export default {
       this.lastName = '';
       this.ssn = '';
       this.searchByOption = 'ssn';
-      this.searchResults = [];
     },
     subscriberSearch () {
       this.showForm = true;
@@ -140,5 +118,6 @@ export default {
 };
 </script>
 
-
-         
+<style>
+#subscriber-search { display: inline; padding-left: 20px; }
+</style>

@@ -4,19 +4,20 @@
 
 ## TODO:
 
-- [ ] Tests - at least 75% coverage
-- [ ] Form validation - including date (OMFG)
-- [ ] Show loading screen when waiting on service
 - [ ] Show confirmation screen when submitted
-- [ ] Member Temp ID Card screens
-- [ ] Subscriber Search screen
-- [ ] Subscriber search functionality
+- [ ] Form validation - including date (OMFG)
 - [ ] Use error component for form validations
+- [X] Subscriber Search screen
+- [X] Subscriber search functionality
+- [ ] Tests - at least 75% coverage
+- [X] Show loading screen when waiting on service
+- [ ] Member Temp ID Card screens
 - [X] Call mock service for PDF
 - [ ] Call mock service for SVG
 - [ ] Layout & Styling
 - [ ] Call actual service for PDF
 - [ ] Call actual service for SVG
+- [ ] Put it in a JSR 286 
 
 ## Build Setup
 
