@@ -4,43 +4,66 @@
           class="btn btn-default"
           :disabled="groupId === ''"
           v-if="!showForm"
-          @click.prevent="subscriberSearch">Subscriber Search</button>
+          @click.prevent="subscriberSearch">Search</button>
   
   <modal v-model="showForm" title="Subscriber Search" ref="modal" size="lg">
-    <form class="form-horizontal" id="subscriber-form">
-      <div class="row">
-        <div class="form-group">
-          <label for="searchOptionSSN" class="control-label col-sm-2">
-            <!-- <input type="radio" name="searchOption" id="searchOptionSSN" value="ssn" v-model="searchByOption" /> -->
-            SSN
-          </label>
-          <div class="col-sm-8">
-            <input type="text" id="ssn" name="ssn" class="form-control" v-model="ssn"> <!--  :disabled="this.searchByOption !== 'ssn'" /> -->
+    
+    <p>
+      Search for a subscriber either by SSN or Name and Birth Date.
+    </p>
+    <alert type="warning" v-if="errorMessage" dismissible  @dismissed="errorMessage=''">{{errorMessage}}</alert>
+
+    <!-- <div class="container"> -->
+      <form class="form-horizontal" id="subscriber-form">
+        <div class="row">
+          <div class="form-group">
+            <label for="searchOptionSSN" class="control-label col-sm-2">
+              SSN
+            </label>
+            <div class="col-sm-8">
+              <input type="text" id="ssn" name="ssn" class="form-control" v-model="ssn" placeholer="###-##-####" :disabled="searchByName" />
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="searchOptionSSN" class="control-label col-sm-2">
-            <!-- <input type="radio" name="searchOption" id="searchOptionName" value="name" v-model="searchByOption" /> -->
-            Last name
-          </label>
-          <div class="col-sm-8">
-            <input type="text" name="lastname" id="lastname" class="form-control" v-model="lastName"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
+          <div class="form-group">
+            <label for="searchOptionSSN" class="control-label col-sm-2">
+              Last name
+            </label>
+            <div class="col-sm-8">
+              <input type="text" name="lastname" id="lastname" class="form-control" v-model="lastName" :disabled="searchBySSN">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="firstname" class="control-label col-sm-2">First name</label>
-          <div class="col-sm-8">
-            <input type="text" name="firstname" id="firstname" class="form-control" v-model="firstName"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
+          <div class="form-group">
+            <label for="firstname" class="control-label col-sm-2">First name</label>
+            <div class="col-sm-8">
+              <input type="text" name="firstname" id="firstname" class="form-control" v-model="firstName" :disabled="searchBySSN">
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="dob" class="control-label col-sm-2">Birth date</label>
-          <div class="col-sm-8">
-            <input type="date" name="dob" id="dob" class="form-control" v-model="dob"> <!--  :disabled="this.searchByOption === 'ssn'"> -->
+          
+          <div class="form-group">
+            <label for="dob" class="control-label col-sm-2">Birth date</label>
+            
+            <div class="col-sm-8">
+              <dropdown> <!-- class="form-group"> -->
+                <div class="input-group">
+                  <input class="form-control" type="text" v-model="dob" :disabled="searchBySSN">
+                  <div class="input-group-btn">
+                    <btn class="dropdown-toggle" :disabled="searchBySSN"><i class="glyphicon glyphicon-calendar"></i></btn>
+                  </div>
+                </div>
+                <template slot="dropdown">
+                  <li>
+                    <date-picker :limit-to="today" format="MM/dd/yyyy" v-model="dob"/>
+                  </li>
+                </template>
+              </dropdown>
+              
+              <!-- <input type="date" name="dob" id="dob" class="form-control" v-model="dob"> --> 
+            </div>
           </div>
-        </div>
+          
       </div>
     </form>
+    <!-- </div> -->
     <div slot="footer">
       <div class="col-sm-12">
         <button name="search" class="btn btn-primary" id="search" @click.prevent="handleSearch" :disabled="formInvalid()">Search</button>
@@ -49,20 +72,18 @@
     </div>
   </modal>
   
-  <div id="search-error" v-if="errorMessage !== ''">
-    {{errorMessage}}
-  </div>
 </div>
 </template>
 
 <script>
-import api from './api';
-import { Modal } from 'uiv';
+import { subscriberSearch } from './api';
+import { Alert, Modal, Btn, DatePicker, Dropdown } from 'uiv';
+import moment from 'moment';
 
 export default {
-  name: 'MemberSearch',
+  name: 'SubscriberSearch',
   props: [ 'groupId' ],
-  components: { Modal },
+  components: { Alert, Modal, Btn, DatePicker, Dropdown },
   data () {
     return {
       showForm: false,
@@ -70,38 +91,46 @@ export default {
       firstName: '', // 'Chris',
       lastName: '', //  'Hall',
       ssn: '', // '322244452',
-      searchByOption: 'ssn',
       searchResults: [],
       errorMessage: ''
     };
   },
+  computed: {
+    today () { return new Date() },
+    searchBySSN () { return this.ssn.length !== 0 },
+    searchByName () { return this.firstName.length !== 0 || this.lastName.length !== 0 }
+  },
   methods: {
     formInvalid () {
-      if (this.searchByOption === 'ssn' && this.ssn.length === 9) {
+      if (this.ssn.length === 9 ||
+          (this.firstName !== '' && this.lastName !== '' && (moment(this.dob).isValid()))
+         ) {
         return false;
-      } else if (this.searchByOption !== 'ssn') {
-        if (this.firstName !== '' && this.lastName !== '' /* && this.dob !== '' */) {
-          return false;
-        }
       }
       return true;
     },
     async handleSearch () {
-      const params = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        ssn: this.ssn,
-        dob: this.dob
-      };
-      try {
-        const results = await api.subscriberSearch(params);
-        // this.searchResults = results.data;
-        this.showForm = false;
-        this.$emit('subscriber-search-complete', results.data);
-      } catch (e) {
-        this.errorMessage = 'No subscribers found';
+      let params = {};
+      if (this.ssn.length === 9) {
+        params.ssn = this.ssn;
       }
-      // this.showForm = this.searchResults.length > 0;
+      else {
+        params = {
+          grpid: this.groupId,
+          firstname: this.firstName,
+          lastname: this.lastName,
+          dob: moment(this.dob).format('MM-DD-YYYY')
+        };
+      }
+      try {
+        const results = await subscriberSearch(params);
+        console.log('we got results: ', results);
+        this.showForm = false;
+        this.$emit('subscriber-search-complete', results.data.results);
+      } catch (e) {
+        console.log('error!', e);
+        this.errorMessage = 'No matching subscribers found.';
+      }
     },
     resetForm () {
       this.showForm = false;
@@ -119,5 +148,5 @@ export default {
 </script>
 
 <style>
-#subscriber-search { display: inline; padding-left: 20px; }
+#subscriber-search { display: inline }
 </style>

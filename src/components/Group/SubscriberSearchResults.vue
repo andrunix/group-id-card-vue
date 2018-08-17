@@ -3,7 +3,9 @@
        v-on:hide="handleHide"
        :footer="false">
   <div id="search-results" v-if="searchResults.length > 0">
-    <h2>Search Results</h2>
+    <p>
+      To select a subscriber, click the Subscriber ID.
+    </p>
     <table class="table table-striped" id="results-table">
       <thead>
         <tr>
@@ -14,7 +16,7 @@
         <tr v-for="s in searchResults">
           <td><a href="#" @click.prevent="handleSubscriberSelected(s.subscriberID)">{{s.subscriberID}}</a></td>
           <td>{{s.lastName}}, {{s.firstName}}</td>
-          <td>{{s.dateOfBirth}}</td>
+          <td>{{s.birthDate.replace(/-/g, '/')}}</td>
         </tr>
       </tbody>
     </table>
@@ -22,7 +24,7 @@
   </modal>
 </template>
 <script>
-import { Modal } from 'uiv';
+import { Modal, DatePicker } from 'uiv';
 
 export default {
   name: 'SubscriberSearchResults',
@@ -33,7 +35,6 @@ export default {
       this.$emit('subscriber-selected', id);
     },
     handleHide () {
-      this.showModal = false;
       this.$emit('subscriber-search-cancel');
     }
   }

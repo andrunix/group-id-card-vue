@@ -1,5 +1,5 @@
 <template>
-	<div class="greyBkgrd">
+	<div id="card-form-toggle">
 		<div id="orangePlusDiv" style="display:inherit;">
 			<a href="#" id="form-toggle" @click.prevent="toggleMe">
         <h3 class="btn-secondary">{{toggleMessage}}</h3>
@@ -35,3 +35,6 @@ export default {
 };
 </script>
 
+<style>
+  #card-form-toggle { display: inline; }
+</style>

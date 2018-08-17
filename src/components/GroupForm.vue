@@ -1,7 +1,8 @@
 <template>
 <div id="group-id-form">
+  <h1>{{title}}</h1>
   <FormToggle on-message="Or order Replacement ID Cards"
-              off-message="Or print temporary ID Cards"
+              off-message="Or print Temporary ID Cards"
               default="on"
               v-on:toggle-forms="showTemporaryCardForm = !showTemporaryCardForm"/>
   
@@ -34,7 +35,8 @@ export default {
     toggleMessage: function () {
       return this.showTemporaryCardForm ? 'Or order Replacement ID Cards' : 'Or print temporary ID Cards';
     },
-    showReplacementCardForm: function () { return !this.showTemporaryCardForm; }
+    showReplacementCardForm: function () { return !this.showTemporaryCardForm; },
+    title () { return this.showTemporaryCardForm ? 'Print Temporary ID Cards' : 'Order Replacement ID Cards'; }
   },
   methods: {
     handleMemberSearch (params) {
@@ -47,5 +49,6 @@ export default {
 </script>
 
 <style>
+#group-id-form h1 { display: inline }
 input[type="date"]::-webkit-inner-spin-button{display:none;}
 </style>

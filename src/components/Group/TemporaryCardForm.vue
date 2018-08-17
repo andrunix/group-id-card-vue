@@ -1,6 +1,5 @@
 <template>
 <div id="temporary-cards">
-  <h1 class="id-card">{{ title }}</h1>
   
   <div>Temporary ID cards can be produced for a Group, Subgroup, Department, or Subscriber</div>
 
@@ -11,86 +10,96 @@
       <li v-for="e in errors">{{e}}</li>
     </ul>
   </div>
-  
+
 	<form class="form-horizontal"
         id="downloadTempCard"
         name="downloadTempCard"
         target="_blank">
-    
-    <div class="row">
-	    <div class="form-group">
-	      <label for="effectiveDate"
-               class="col-sm-2 control-label required">
-	        Benefit Effective Date
-	      </label>
-	      <div class="col-sm-10">
-			    <input type="date"
-                 id="effectiveDate"
-                 class="controls input-append date form_date form-control"
-                 v-model="formData.effectiveDate" />
-			    <span>(MM/DD/YYYY) </span> 
-			    <span class="add-on"><i class="icon-remove"></i></span>
-			    <span class="add-on"><i class="icon-th"></i></span>
-			  </div>
-		  </div>
-      <div class="form-group">
-        <!-- Group Select -->
-        <label for="groupid" class="col-sm-2 control-label required">Group ID</label>
-        <div class="col-sm-10">
-          <select id="groupid" name="groupid" class="form-control" v-model="formData.groupID" @change="groupChanged">
-            <option value="">-Select group-</option>
-            <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
-          </select>
-        </div>
-      </div>
-      
-		  <div class="form-group">
-			  <label for="subgroupid" class="col-sm-2 control-label">Subgroup ID</label>
-        <div class="col-sm-10">
-			    <select id="subgroupid"
-			    	      type="text"
-                  class="form-control"
-                  v-model="formData.subgroupID"
-                  :disabled="formData.groupID === ''">
-            <option v-for="s in subgroups" v-bind:value="s.id">{{s.id}} - {{s.name}}</option>
-          </select>
-		    </div>
-		  </div>
 
-		  <div class="form-group">
-			  <label for="departmentid" class="col-sm-2 control-label">
-				  Department ID
-			  </label>
-        <div class="col-sm-4">
-          <input id="departmentid" 
-			    	     type="text"
-                 class="form-control"
-                 v-model="formData.departmentID" />
-        </div>
-      </div>
-      
-		  <div class="form-group">
-			  <label for="subscriberid" class="col-sm-2 control-label">
-				  Subscriber ID
-			  </label>
-        <div class="col-sm-4">
-          <input id="subscriberid" 
-			    	     type="text"
-                 class="form-control"
-                 v-model="formData.subscriberID" />
-        </div>
-        <div class="col-sm-4">
-          OR
-          <SubscriberSearch v-on:subscriber-search-complete="handleSearchComplete"
-            :group-id="formData.groupID" />
+    <div class="container">
+      <div class="row">
+        
+	      <div class="form-group">
+	        <label for="effectiveDate"
+                 class="col-sm-2 control-label required">
+	          Benefit Effective Date
+	        </label>
+          
+	        <div class="col-sm-10">
+            <dropdown> <!--  class="form-group"> -->
+              <div class="input-group">
+                <input class="form-control" type="text" v-model="formData.effectiveDate">
+                <div class="input-group-btn">
+                  <btn class="dropdown-toggle"><i class="glyphicon glyphicon-calendar"></i></btn>
+                </div>
+              </div>
+              <template slot="dropdown">
+                <li>
+                  <date-picker :limit-from="today" format="MM/dd/yyyy" v-model="formData.effectiveDate"/>
+                </li>
+              </template>
+            </dropdown>
+			    </div>
 		    </div>
-		  </div>
-      
-      <div class="form-group">
-        <div class="col-sm-10 col-sm-offset-2">
-          <button id="submit" class="btn btn-primary"
-                  @click.prevent="submitForm"
-                  :disabled="formInvalid() || submitted">Submit Request</button>
+
+        
+        <div class="form-group">
+          <!-- Group Select -->
+          <label for="groupid" class="col-sm-2 control-label required">Group</label>
+          <div class="col-sm-10">
+            <select id="groupid" name="groupid" class="form-control" v-model="formData.groupID" @change="groupChanged">
+              <option value="">-Select group-</option>
+              <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
+            </select>
+          </div>
+        </div>
+        
+		    <div class="form-group">
+			    <label for="subgroupid" class="col-sm-2 control-label">Subgroup</label>
+          <div class="col-sm-10">
+			      <select id="subgroupid"
+			    	        type="text"
+                    class="form-control"
+                    v-model="formData.subgroupID"
+                    :disabled="formData.groupID === ''">
+              <option v-for="s in subgroups" v-bind:value="s.id">{{s.id}} - {{s.name}}</option>
+            </select>
+		      </div>
+		    </div>
+        
+		    <div class="form-group">
+			    <label for="departmentid" class="col-sm-2 control-label">
+				    Department
+			    </label>
+          <div class="col-sm-4">
+            <input id="departmentid" 
+			    	       type="text"
+                   class="form-control"
+                   v-model="formData.departmentID" />
+          </div>
+        </div>
+        
+		    <div class="form-group">
+			    <label for="subscriberid" class="col-sm-2 control-label">
+				    Subscriber
+			    </label>
+          <div class="col-sm-8">
+            <input id="subscriberid" 
+			    	       type="text"
+                   class="form-control"
+                   v-model="formData.subscriberID" />
+          </div>
+          <div class="col-sm-2">
+            <SubscriberSearch v-on:subscriber-search-complete="handleSearchComplete"
+                              :group-id="formData.groupID" />
+		      </div>
+		    </div>
+        
+        <div class="form-group">
+          <div class="col-sm-10 col-sm-offset-2 pull-right">
+            <button id="submit" class="btn btn-primary"
+                    @click.prevent="submitForm"
+                  :disabled="formInvalid() || submitted">Submit</button>
         </div>
       </div>
 
@@ -101,21 +110,32 @@
         v-on:subscriber-search-cancel="handleCancel"/>
 
     </div>
+    </div>
 	</form>
 
   </div>
 </template>
 
 <script>
+import moment from 'moment';
+import { Alert, Btn, DatePicker, Dropdown } from 'uiv';
 import LoadingIndicator from '../LoadingIndicator.vue';
 import SubscriberSearch from './SubscriberSearch.vue';
 import SubscriberSearchResults from './SubscriberSearchResults.vue';
-import api from './api';
+import { getTempCardPdf } from './api';
 
 export default {
   name: 'TemporaryCardForm',
   props: [ 'groupList' ],
-  components: { SubscriberSearch, SubscriberSearchResults, LoadingIndicator },
+  components: {
+    Alert,
+    Btn,
+    DatePicker,
+    Dropdown,
+    SubscriberSearch,
+    SubscriberSearchResults,
+    LoadingIndicator
+  },
   data () {
     return {
       title: 'Print Temporary ID Cards',
@@ -129,7 +149,7 @@ export default {
         subgroupID: '',
         departmentID: '',
         subscriberID: '',
-        effectiveDate: '2018-07-17'
+        effectiveDate: moment().format('MM/DD/YYYY')
       },
       searchResults: [],
       showResultsModal: false
@@ -139,7 +159,8 @@ export default {
     formValid: function (e) {
       return this.formData.groupID.trim() !== '' &&
         this.formData.effectiveDate.trim() !== '';
-    }
+    },
+    today () { return new Date() }
   },
   methods: {
     groupChanged () {
@@ -192,7 +213,7 @@ export default {
       // TODO: pass the required parameters to the service
       const params = {};
       try {
-        const resp = await api.getTempCardPdf(params);
+        const resp = await getTempCardPdf(params);
         // Downloading/Opening the PDF directly. Refer to this:
         // https://github.com/kennethjiang/js-file-download/blob/master/file-download.js
         // The response is the raw PDF. Construct a Blob from it.
@@ -224,6 +245,10 @@ export default {
       this.submitted = false;
       this.isLoading = false;
     }
+  },
+  created () {
+    const today = moment();
+    // this.formData.effectiveDate = today.format('YYYY-MM-DD');
   }
 };
 </script>

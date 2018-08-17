@@ -1,80 +1,93 @@
 <template>
 <div id="replacement-cards">
-  <h1>{{title}}</h1>
-  
   <p>Please allow 7 to 10 working days to receive your new cards.</p>
-
+  
   <div class="errors" id="errors" v-if="errors.length > 0">
     <ul>
       <li v-for="e in errors">{{e}}</li>
     </ul>
   </div>
-
-  <div class="row">
-    <form class="form-horizontal" id="replacementForm">
-      <div class="form-group">
-        <!-- Group Select -->
-        <label for="groupid" class="col-sm-2 control-label required">Group ID</label>
-        <div class="col-sm-10">
-          <select id="groupid" name="groupid" class="form-control" v-model="groupID">
-            <option value="">-Select group-</option>
-            <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
-          </select>
+  
+  <div class="container">
+    <div class="row">
+      <form class="form-horizontal" id="replacementForm">
+        <div class="form-group">
+          <!-- Group Select -->
+          <label for="groupid" class="col-sm-2 control-label required">Group</label>
+          <div class="col-sm-10">
+            <select id="groupid" name="groupid" class="form-control" v-model="formData.groupID">
+              <option value="">-Select group-</option>
+              <option v-for="g in groupList" v-bind:value="g.groupID">{{g.groupID}} - {{g.groupName}}</option>
+            </select>
+          </div>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <!-- Subscriber Search Form -->
-        <label for="subscriberid" class="col-sm-2 control-label required">Subscriber ID</label>
-        <div class="col-sm-2">
-          <input type="text" id="subscriberid"
-                 name="subscriberid"
-                 class="form-control"
-                 v-model="subscriberID"
-                 required="true"/>
+        
+        <div class="form-group">
+          <!-- Subscriber Search Form -->
+          <label for="subscriberid" class="col-sm-2 control-label required">Subscriber</label>
+          <div class="col-sm-2">
+            <input type="text" id="subscriberid"
+                   name="subscriberid"
+                   class="form-control"
+                   v-model="formData.subscriberID"
+                   required="true"/>
+          </div>
+          <div class="col-sm-8">
+            <SubscriberSearch v-on:subscriber-search-complete="handleSearchComplete"
+                              :group-id="formData.groupID" />
+          </div>
         </div>
-        <div class="col-sm-8">
-          <SubscriberSearch />
+        
+        <div class="form-group">
+          <!-- number of cards -->
+          <label for="cards" class="col-sm-2 control-label">Number of Cards</label>
+          <div class="col-sm-10">
+            <select id="cards" name="cards" class="form-control" v-model="formData.numberOfCards">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </div>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <!-- number of cards -->
-        <label for="cards" class="col-sm-2 control-label">Number of Cards</label>
-        <div class="col-sm-10">
-          <select id="cards" name="cards" class="form-control" v-model="numberOfCards">
-            <option value="1">1</option>
-            <option value="2">2</option>
-          </select>
+        
+        <div class="form-group">
+          <div class="col-sm-2 col-sm-offset-2">
+            <button id="submit" class="btn btn-primary" @click.prevent="submitForm">Submit</button>
+          </div>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <div class="col-sm-2 col-sm-offset-2">
-          <button id="submit" class="btn btn-primary" @click.prevent="submitForm">Submit Request</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-
+  
+  <SubscriberSearchResults
+    :showModal="showResultsModal"
+    :search-results="searchResults"
+    v-on:subscriber-selected="handleSubscriberSelected"
+    v-on:subscriber-search-cancel="handleCancel"/>
+  
+  
 </div>
 </template>
 
 <script>
 import SubscriberSearch from './SubscriberSearch.vue';
+import SubscriberSearchResults from './SubscriberSearchResults.vue';
 
 export default {
   name: 'ReplacementCardForm',
   props: [ 'groupList' ],
-  components: { SubscriberSearch },
+  components: { SubscriberSearch, SubscriberSearchResults },
   data () {
     return {
       title: 'Order Replacement ID Cards',
-      groupID: '',
-      subscriberID: '',
-      numberOfCards: '1',
+      formData: {
+        groupID: '',
+        subscriberID: '',
+        numberOfCards: '1'
+      },
       errors: [],
-      showSubscriberSearch: false
+      showSubscriberSearch: false,
+      searchResults: [],
+      showResultsModal: false
     };
   },
   methods: {
@@ -93,6 +106,19 @@ export default {
           numberOfCards: this.numberOfCards
         });
       }
+    },
+    handleSearchComplete (results) {
+      this.searchResults = results;
+      this.showResultsModal = results.length > 0;
+    },
+    handleSubscriberSelected (id) {
+      this.searchResults = [];
+      this.showResultsModal = false;
+      this.formData.subscriberID = id;
+    },
+    handleCancel () {
+      this.searchResults = [];
+      this.showResultsModal = false;
     },
     subscriberSearch: function () {
       this.$emit('subscriber-search');
